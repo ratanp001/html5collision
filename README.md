@@ -18,4 +18,4 @@
 
         npm start
 
-Your canvas piece should open up automatically at http://localhost:3000 and you should see 'HTML CANVAS BOILERPLATE' on hover.
+Your canvas piece should open up automatically at http://localhost:3000 and you should see 'the app running with different circles colliding each other'.
