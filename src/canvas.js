@@ -26,54 +26,62 @@ addEventListener('resize', () => {
     init()
 })
 
-function getDistance(x1,y1,x2,y2){
-    var xDistance = x2 - x1;
-    var yDistance = y2 - y1;
-
-    return Math.sqrt(Math.pow(xDistance,2)+ Math.pow(yDistance,2));
-}
-
 // Objects
 function Circle(x, y, radius, color) {
-    this.x = x;
-    this.y = y;
+    this.x = x
+    this.y = y
+    this.radius = radius
     this.velocity={
-        x: Math.random() -0.5,
-        y: Math.random() - 0.5
+        x: Math.random() + 0.5,
+        y: Math.random() + 0.5
     }
-    this.radius = radius;
     this.color = color;
-}
 
-
-Circle.prototype.update = circleArr => {
-    console.log(circleArr);
-    console.log(this);
+    this.update = circleArr => {
     this.draw();
 
-    for (let i = 0; i < circleArr.length; i++) {
-        console.log(i+circleArr[i].y);
-        
-       if(this === circleArr[i]) continue;
-            if(getDistance(this.x,this.y,circleArr[i].x,circleArr[i].y) - (this.radius* 2 ) < 0){
-                console.log("particles has collided!!");
-            }
-    }
-    this.x +=this.velocity.x;
-    this.y +=this.velocity.y;
-    
-}
 
-Circle.prototype.draw = () => {
+    for(let i = 0; i < circleArr.length; i++){
+            if(this === circleArr[i]) continue;
+            if(getDistance(this.x,this.y,circleArr[i].x,circleArr[i].y) - (this.radius* 2 ) < 0){
+                console.log("has collided");
+            }
+
+        }
+        if(this.x +this.radius > canvas.width || this.x -this.radius < 0){
+            this.velocity.x = -this.velocity.x;
+        }
+         if(this.y +this.radius > canvas.height || this.y -this.radius < 0){
+            this.velocity.y = -this.velocity.y;
+        }
+        this.x+=this.velocity.x;
+        this.y+=this.velocity.y;
+    }
+
+
+    this.draw = function() {
     c.beginPath()
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
     //c.fillStyle = this.color
     c.strokeStyle = this.color;
     c.stroke();
     c.closePath()
+    }
+
 }
 
 
+Circle.prototype.update = circleArr  => {
+    //this.draw();
+
+}
+
+function getDistance(x1,y1,x2,y2){
+    var xDistance = x2 - x1;
+    var yDistance = y2 - y1;
+
+    return Math.sqrt(Math.pow(xDistance,2)+ Math.pow(yDistance,2));
+}
 
 // Implementation
 let circles;
@@ -94,17 +102,14 @@ function init() {
                 if(getDistance(x,y,circleArr[j].x,circleArr[j].y) - (radius* 2 ) < 0){
 
                     
-                     x = randomIntFromRange(radius,canvas.width - radius);
+                    x = randomIntFromRange(radius,canvas.width - radius);
                     y = randomIntFromRange(radius,canvas.height - radius);
-                     j = -1;   
+                    j = -1;   
                 }
             }
         }
     circleArr.push(new Circle(x,y,radius,'black'));
-
     }
-   // console.log(circleArr);
-
 }
 
 // Animation Loop
@@ -112,7 +117,6 @@ function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
     circleArr.forEach(circle=>{
-       console.log("before :"+circle.x);
         circle.update(circleArr);
     })
 }
